@@ -680,6 +680,8 @@ function renderCorrespondenceCodeDetail(game, message = "") {
   els.corrHome.classList.remove("is-hidden");
   els.corrActions?.classList.add("is-hidden");
   els.corrDetail.classList.remove("is-hidden");
+  els.deckScreen.classList.remove("is-visible");
+  els.passScreen.classList.remove("is-visible");
   document.body.classList.remove("is-waiting-code", "is-replaying");
   els.corrDetail.innerHTML = `
     <article class="corr-card">
