@@ -1,12 +1,16 @@
+![CHEGG title](sprites/title.png)
+
 # CHEGG
 
-CHEGG is a small browser tactics game inspired by chess movement, Minecraft mobs, mana, and deck-built spawn eggs.
+**Original CHEGG concept by Gerg.** This is an unofficial browser adaptation of the Minecraft minigame from [_The Most COMPLEX Minigame I've Ever Made - CHEGG_](https://www.youtube.com/watch?v=ciZCvS2PKNA).
 
-Play it here: https://lfzinho.github.io/minechegg/
+Play here: https://lfzinho.github.io/minechegg/
 
-Rules reference:
-- Original Google Doc: https://docs.google.com/document/d/1TM736HhNsh2nz8l3L-a6PuWAVxbnBSF__NB7qX7Wdlw/edit?tab=t.0
-- Local PDF: [CHEGG - Official Rules - How to Play.pdf](CHEGG%20-%20Official%20Rules%20-%20How%20to%20Play.pdf)
+CHEGG is a browser tactics game about chess-like creature movement, Minecraft mobs, mana, and deck-built spawn eggs.
+
+Rules:
+- Original rules doc: https://docs.google.com/document/d/1TM736HhNsh2nz8l3L-a6PuWAVxbnBSF__NB7qX7Wdlw/edit?tab=t.0
+- Local PDF copy: [CHEGG - Official Rules - How to Play.pdf](CHEGG%20-%20Official%20Rules%20-%20How%20to%20Play.pdf)
 
 ## Modes
 
@@ -15,7 +19,7 @@ Rules reference:
 
 ## Development
 
-This is a static site. To run it locally, serve the folder and open `index.html`.
+This is a static site. To run it locally:
 
 ```bash
 python -m http.server 4173
