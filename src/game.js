@@ -249,6 +249,7 @@ let replaying = false;
 let replayBoardPieces = null;
 let correspondenceGame = null;
 let pendingInvitePacket = null;
+let correspondenceCodePopupClosed = false;
 let lab = {
   type: "slime",
   scenario: "auto",
@@ -403,7 +404,7 @@ function render() {
   if (CORRESPONDENCE_MODE) renderCorrespondencePanel();
   document.body.classList.toggle("lab-mode", LAB_MODE);
   document.body.classList.toggle("correspondence-mode", CORRESPONDENCE_MODE);
-  document.body.classList.toggle("is-waiting-code", CORRESPONDENCE_MODE && isCorrespondenceCodeMode());
+  document.body.classList.toggle("is-waiting-code", CORRESPONDENCE_MODE && isCorrespondenceCodePopupVisible());
   document.body.classList.toggle("is-replaying", replaying);
 }
 
@@ -676,6 +677,7 @@ function renderCorrespondenceCodeDetail(game, message = "") {
   if (!els.corrDetail) return;
   state = null;
   correspondenceGame = game;
+  correspondenceCodePopupClosed = false;
   els.app.classList.add("is-hidden");
   els.corrHome.classList.remove("is-hidden");
   els.corrActions?.classList.add("is-hidden");
@@ -819,6 +821,7 @@ function finishCorrespondenceDeck(deck) {
     game.exportedCodes.push(0);
     upsertCorrespondenceGame(game);
     builder = null;
+    correspondenceCodePopupClosed = false;
     renderCorrespondenceCodeDetail(game, "Invite code created. Send it to your opponent, then paste their join code here.");
     return;
   }
@@ -849,6 +852,7 @@ function finishCorrespondenceDeck(deck) {
   pendingInvitePacket = null;
   state = game.state;
   correspondenceGame = game;
+  correspondenceCodePopupClosed = false;
   render();
 }
 
@@ -865,6 +869,7 @@ function openCorrespondenceGame(gameId) {
   correspondenceGame = game;
   state = game.state;
   selected = null;
+  correspondenceCodePopupClosed = false;
   els.corrHome.classList.add("is-hidden");
   els.app.classList.remove("is-hidden");
   render();
@@ -915,6 +920,7 @@ function importCorrespondenceCode(gameId, rawCode) {
     game.importedCodes.push(packet.seq);
     game.nextExpectedSeq = packet.seq + 1;
     upsertCorrespondenceGame(game);
+    correspondenceCodePopupClosed = false;
     if (game.state) {
       openCorrespondenceGame(game.gameId);
       if (shouldReplay) window.setTimeout(() => replayOpponentActions(), 180);
@@ -973,6 +979,10 @@ function isCorrespondenceCodeMode() {
   if (!CORRESPONDENCE_MODE || !correspondenceGame || !state) return false;
   if (hasPendingOutgoingCode()) return true;
   return !state.winner && !isCorrespondenceLocalTurn();
+}
+
+function isCorrespondenceCodePopupVisible() {
+  return isCorrespondenceCodeMode() && !correspondenceCodePopupClosed;
 }
 
 function correspondenceStatusText() {
@@ -1135,9 +1145,14 @@ function renderCorrespondencePanel() {
   const waitingForOpponent = !state?.winner && !isCorrespondenceLocalTurn();
   const showImport = !state?.winner && (waitingForOpponent || pendingOutgoing);
   const showOutgoingCode = pendingOutgoing;
+  const codeMode = isCorrespondenceCodeMode();
+  const popupVisible = isCorrespondenceCodePopupVisible();
   els.corrPanel.innerHTML = `
     <h2>Correspondence</h2>
     <p class="hint">${ownerName(correspondenceGame.localSide)} · ${escapeHtml(correspondenceStatusText())} · next code #${correspondenceGame.nextExpectedSeq}</p>
+    ${codeMode ? `
+      <button type="button" data-corr-toggle-popup>${popupVisible ? "Close popup" : "Focus code exchange"}</button>
+    ` : ""}
     ${showOutgoingCode ? `
       <label class="corr-code-label">Send this code to your opponent</label>
       <textarea rows="7" readonly>${escapeHtml(correspondenceGame.lastGeneratedCode)}</textarea>
@@ -1156,6 +1171,10 @@ function renderCorrespondencePanel() {
   els.corrPanel.querySelector("[data-corr-import-button]")?.addEventListener("click", () => {
     const input = els.corrPanel.querySelector("[data-corr-import-current]");
     importCorrespondenceCode(correspondenceGame.gameId, input.value);
+  });
+  els.corrPanel.querySelector("[data-corr-toggle-popup]")?.addEventListener("click", () => {
+    correspondenceCodePopupClosed = !correspondenceCodePopupClosed;
+    render();
   });
   els.corrPanel.querySelector("[data-corr-home]").addEventListener("click", () => renderCorrespondenceHome());
 }
@@ -2138,6 +2157,7 @@ function endCorrespondenceTurn() {
   correspondenceGame.exportedCodes.push(seq);
   correspondenceGame.nextExpectedSeq = seq + 1;
   upsertCorrespondenceGame(correspondenceGame);
+  correspondenceCodePopupClosed = false;
   render();
 }
 
