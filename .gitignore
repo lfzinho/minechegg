@@ -1,0 +1,11 @@
+*.import
+*.uid
+*.psd
+*.bbmodel
+*.tres
+*.gdshader
+.godot/
+.import/
+node_modules/
+.DS_Store
+Thumbs.db
