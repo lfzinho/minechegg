@@ -399,11 +399,11 @@ function render() {
     ? `${state.players[state.winner].name} wins`
     : `${player.name}'s turn`;
   els.endTurnButton.textContent = LAB_MODE ? "Reset test" : CORRESPONDENCE_MODE ? "Finish Turn" : state.winner && state.active !== state.winner ? "New game" : "End turn";
-  els.endTurnButton.disabled = CORRESPONDENCE_MODE && !isCorrespondenceLocalTurn();
+  els.endTurnButton.disabled = CORRESPONDENCE_MODE && (!isCorrespondenceLocalTurn() || hasPendingOutgoingCode());
   if (CORRESPONDENCE_MODE) renderCorrespondencePanel();
   document.body.classList.toggle("lab-mode", LAB_MODE);
   document.body.classList.toggle("correspondence-mode", CORRESPONDENCE_MODE);
-  document.body.classList.toggle("is-waiting-code", CORRESPONDENCE_MODE && Boolean(correspondenceGame) && !isCorrespondenceLocalTurn());
+  document.body.classList.toggle("is-waiting-code", CORRESPONDENCE_MODE && isCorrespondenceCodeMode());
   document.body.classList.toggle("is-replaying", replaying);
 }
 
@@ -798,13 +798,14 @@ function startCorrespondenceDeckBuilder(flow, invitePacket = null) {
 function finishCorrespondenceDeck(deck) {
   if (builder.flow === "corr-start") {
     const now = new Date().toISOString();
+    const redDeck = shuffle([...deck]);
     const game = {
       gameId: crypto.randomUUID(),
       name: `CHEGG ${now.slice(0, 10)} Red`,
       localSide: "red",
       status: "waiting-for-join",
       state: null,
-      redDeck: [...deck],
+      redDeck,
       blueDeck: null,
       createdAt: now,
       updatedAt: now,
@@ -824,7 +825,7 @@ function finishCorrespondenceDeck(deck) {
 
   const invite = pendingInvitePacket;
   const now = new Date().toISOString();
-  const blueDeck = [...deck];
+  const blueDeck = shuffle([...deck]);
   const game = {
     gameId: invite.gameId,
     name: `CHEGG ${now.slice(0, 10)} Blue`,
@@ -961,6 +962,17 @@ function decodeCorrespondencePacket(code) {
 
 function isCorrespondenceLocalTurn() {
   return !CORRESPONDENCE_MODE || !correspondenceGame || state?.active === correspondenceGame.localSide;
+}
+
+function hasPendingOutgoingCode() {
+  if (!CORRESPONDENCE_MODE || !correspondenceGame?.lastGeneratedCode) return false;
+  return correspondenceGame.exportedCodes?.includes(correspondenceGame.nextExpectedSeq - 1);
+}
+
+function isCorrespondenceCodeMode() {
+  if (!CORRESPONDENCE_MODE || !correspondenceGame || !state) return false;
+  if (hasPendingOutgoingCode()) return true;
+  return !state.winner && !isCorrespondenceLocalTurn();
 }
 
 function correspondenceStatusText() {
@@ -1105,29 +1117,37 @@ function renderMeter(el, owner) {
 }
 
 function renderPanel() {
+  let highlighted = false;
+  const activeText = typeof activeReplayLog === "string" ? activeReplayLog : activeReplayLog?.logText;
   els.activePanel.innerHTML = `
     <h2>Log</h2>
-    <div class="log">${state.log.slice(0, 12).map((line) => `<p class="${line === activeReplayLog ? "is-replay-active" : ""}">${escapeHtml(line)}</p>`).join("")}</div>
+    <div class="log">${state.log.slice(0, 12).map((line) => {
+      const isActive = Boolean(activeText && !highlighted && line === activeText);
+      if (isActive) highlighted = true;
+      return `<p class="${isActive ? "is-replay-active" : ""}">${escapeHtml(line)}</p>`;
+    }).join("")}</div>
   `;
 }
 
 function renderCorrespondencePanel() {
   if (!els.corrPanel || !correspondenceGame) return;
-  const waitingForOpponent = !isCorrespondenceLocalTurn();
-  const showOutgoingCode = waitingForOpponent && correspondenceGame.lastGeneratedCode;
+  const pendingOutgoing = hasPendingOutgoingCode();
+  const waitingForOpponent = !state?.winner && !isCorrespondenceLocalTurn();
+  const showImport = !state?.winner && (waitingForOpponent || pendingOutgoing);
+  const showOutgoingCode = pendingOutgoing;
   els.corrPanel.innerHTML = `
     <h2>Correspondence</h2>
     <p class="hint">${ownerName(correspondenceGame.localSide)} · ${escapeHtml(correspondenceStatusText())} · next code #${correspondenceGame.nextExpectedSeq}</p>
-    ${waitingForOpponent ? `
+    ${showOutgoingCode ? `
+      <label class="corr-code-label">Send this code to your opponent</label>
+      <textarea rows="7" readonly>${escapeHtml(correspondenceGame.lastGeneratedCode)}</textarea>
+      <button type="button" data-corr-copy-current>Copy latest code</button>
+    ` : ""}
+    ${showImport ? `
       <label class="corr-code-label">Paste your opponent's code</label>
       <textarea rows="6" data-corr-import-current spellcheck="false" placeholder="CHEGG1..."></textarea>
       <button type="button" data-corr-import-button>Import code</button>
-    ` : `<p class="hint">Play your turn on the board, then press Finish Turn to create the code for your opponent.</p>`}
-    ${showOutgoingCode ? `
-      <label class="corr-code-label">Send this code to your opponent</label>
-      <textarea rows="5" readonly>${escapeHtml(correspondenceGame.lastGeneratedCode)}</textarea>
-      <button type="button" data-corr-copy-current>Copy latest code</button>
-    ` : ""}
+    ` : state?.winner ? `<p class="hint">The match is finished.</p>` : `<p class="hint">Play your turn on the board, then press Finish Turn to create the code for your opponent.</p>`}
     <button type="button" data-corr-home>Back to games</button>
   `;
   els.corrPanel.querySelector("[data-corr-copy-current]")?.addEventListener("click", () => {
@@ -1325,7 +1345,7 @@ async function replayOpponentActions() {
   els.endTurnButton.disabled = true;
 
   for (const action of actions) {
-    activeReplayLog = action.logText;
+    activeReplayLog = action;
     replayBoardPieces = action.beforePieces || state.pieces;
     renderBoard();
     renderPanel();
@@ -1396,9 +1416,18 @@ function renderHand() {
 function renderSelection() {
   if (state.winner) {
     const didWin = state.active === state.winner;
+    const winnerHint = CORRESPONDENCE_MODE
+      ? didWin
+        ? hasPendingOutgoingCode()
+          ? "Copy the final code so your opponent can watch the replay."
+          : "Finish Turn to create the final code for your opponent."
+        : "The enemy Villager was eliminated."
+      : didWin
+      ? "End turn to pass the computer for the final replay."
+      : "The enemy Villager was eliminated. Start a new game when ready.";
     els.selectionPanel.innerHTML = `
       <h2 class="winner">${didWin ? "You won" : "You lost"}</h2>
-      <p class="hint">${didWin ? "End turn to pass the computer for the final replay." : "The enemy Villager was eliminated. Start a new game when ready."}</p>
+      <p class="hint">${winnerHint}</p>
     `;
     return;
   }
@@ -2098,7 +2127,7 @@ function endTurn() {
 }
 
 function endCorrespondenceTurn() {
-  if (!correspondenceGame || !state || !isCorrespondenceLocalTurn() || replaying) return;
+  if (!correspondenceGame || !state || !isCorrespondenceLocalTurn() || replaying || hasPendingOutgoingCode()) return;
   selected = null;
   if (!state.winner) beginTurn(state, opponent(state.active));
   correspondenceGame.state = state;

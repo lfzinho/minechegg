@@ -247,6 +247,15 @@ button:disabled {
   opacity: 0.72;
 }
 
+.correspondence-mode.is-waiting-code::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 65;
+  background: rgba(4, 4, 4, 0.58);
+  pointer-events: none;
+}
+
 .correspondence-mode.is-waiting-code .board,
 .correspondence-mode.is-waiting-code .hand {
   pointer-events: none;
@@ -254,6 +263,30 @@ button:disabled {
 
 .correspondence-mode.is-waiting-code .selection-panel {
   background: rgba(18, 18, 16, 0.88);
+}
+
+.correspondence-mode.is-waiting-code .corr-panel {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  z-index: 70;
+  width: min(720px, calc(100vw - 32px));
+  max-height: calc(100vh - 48px);
+  overflow: auto;
+  transform: translate(-50%, -50%);
+  margin: 0;
+  padding: 18px;
+  border: 2px solid rgba(233, 196, 106, 0.72);
+  background: rgba(24, 23, 20, 0.98);
+  box-shadow: 0 28px 80px rgba(0, 0, 0, 0.62), inset 0 0 0 2px rgba(255, 255, 255, 0.06);
+}
+
+.correspondence-mode.is-waiting-code .corr-panel h2 {
+  font-size: 18px;
+}
+
+.correspondence-mode.is-waiting-code .corr-panel textarea {
+  min-height: 130px;
 }
 
 .title-screen {
