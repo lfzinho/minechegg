@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>CHEGG</title>
+    <link rel="stylesheet" href="styles.css?v=titleArt1" />
+  </head>
+  <body class="title-page">
+    <main id="titleScreen" class="title-screen is-visible">
+      <div class="title-scene">
+        <p class="eyebrow">Minecraft chess tactics</p>
+        <h1 class="sr-only">CHEGG</h1>
+        <img class="title-logo" src="sprites/title.png" alt="CHEGG" />
+        <div class="mode-grid" aria-label="Game modes">
+          <button id="hotseatModeButton" class="mode-button primary is-active" type="button" data-mode="hotseat">
+            <span>Hot-seat</span>
+            <small>Local pass-and-play</small>
+          </button>
+          <button id="correspondenceModeButton" class="mode-button" type="button" data-mode="correspondence">
+            <span>Correspondence</span>
+            <small>Play by turns</small>
+          </button>
+        </div>
+
+        <section id="hotseatIntro" class="mode-details is-visible is-entering" aria-label="Hot-seat mode details">
+          <div class="mode-panel-head">
+            <p class="eyebrow">Selected mode</p>
+            <h2>Hot-seat: pass the computer</h2>
+          </div>
+          <article>
+            <span class="mode-icon" aria-hidden="true">🎲</span>
+            <h3>The Game</h3>
+            <p>CHEGG is a creature tactics game inspired by chess movement, Minecraft mobs, mana, and deck-built spawn eggs.</p>
+            <a href="https://docs.google.com/document/d/1TM736HhNsh2nz8l3L-a6PuWAVxbnBSF__NB7qX7Wdlw/edit?tab=t.0" target="_blank" rel="noreferrer">Original rules</a>
+          </article>
+          <article>
+            <span class="mode-icon" aria-hidden="true">🪑</span>
+            <h3>Hot-seat</h3>
+            <p>Two players share this computer. Build decks privately, take turns locally, and use the same board for the whole match.</p>
+          </article>
+          <article>
+            <span class="mode-icon" aria-hidden="true">🙈</span>
+            <h3>Screen Pass</h3>
+            <p>Between turns, the screen hides the board and hand. Call the other player over, press Ready, then review the replay.</p>
+          </article>
+          <a class="mode-start" href="game.html"><span>Start Hot-seat</span><strong>→</strong></a>
+        </section>
+
+        <section id="correspondenceIntro" class="mode-details" aria-label="Correspondence mode details">
+          <div class="mode-panel-head">
+            <p class="eyebrow">Selected mode</p>
+            <h2>Correspondence: play by turns</h2>
+          </div>
+          <article>
+            <span class="mode-icon" aria-hidden="true">🎲</span>
+            <h3>The Game</h3>
+            <p>Same CHEGG rules, same creature movement, same deck-built strategy.</p>
+            <a href="https://docs.google.com/document/d/1TM736HhNsh2nz8l3L-a6PuWAVxbnBSF__NB7qX7Wdlw/edit?tab=t.0" target="_blank" rel="noreferrer">Original rules</a>
+          </article>
+          <article>
+            <span class="mode-icon" aria-hidden="true">✉️</span>
+            <h3>Correspondence</h3>
+            <p>Designed for slower games where players exchange turns, like chess by mail or chat.</p>
+          </article>
+          <article>
+            <span class="mode-icon" aria-hidden="true">📦</span>
+            <h3>Code Exchange</h3>
+            <p>Each setup step and finished turn creates a CHEGG code. Send it to your opponent, then paste their next code to continue.</p>
+          </article>
+          <a class="mode-start" href="correspondence.html"><span>Open Correspondence</span><strong>→</strong></a>
+        </section>
+      </div>
+    </main>
+
+    <script>
+      const modeButtons = document.querySelectorAll(".mode-button[data-mode]");
+      const panels = {
+        hotseat: document.querySelector("#hotseatIntro"),
+        correspondence: document.querySelector("#correspondenceIntro"),
+      };
+
+      modeButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          const mode = button.dataset.mode;
+          modeButtons.forEach((item) => item.classList.toggle("is-active", item === button));
+          Object.entries(panels).forEach(([id, panel]) => {
+            const isSelected = id === mode;
+            panel.classList.toggle("is-visible", isSelected);
+            panel.classList.remove("is-entering");
+            if (isSelected) {
+              void panel.offsetWidth;
+              panel.classList.add("is-entering");
+            }
+          });
+        });
+      });
+    </script>
+  </body>
+</html>

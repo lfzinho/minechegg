@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>CHEGG - Correspondence</title>
+    <link rel="stylesheet" href="styles.css?v=corrTurnUx1" />
+  </head>
+  <body class="correspondence-page">
+    <main id="corrHome" class="corr-home">
+      <section class="corr-hero">
+        <p class="eyebrow">CHEGG correspondence</p>
+        <h1>Play by code</h1>
+        <p>Start, join, and continue slow CHEGG matches by sending codes back and forth.</p>
+      </section>
+
+      <section id="corrActions" class="corr-actions">
+        <article class="corr-card">
+          <h2>Saved games</h2>
+          <div id="corrGames" class="corr-games"></div>
+        </article>
+
+        <article class="corr-card">
+          <h2>Start new game</h2>
+          <p class="hint">Build your deck as Red, then send the generated invite code to your opponent.</p>
+          <button id="corrNewGameButton" type="button">Build Red deck</button>
+        </article>
+
+        <article class="corr-card">
+          <h2>Join from code</h2>
+          <p class="hint">Paste an invite code from another player, build your Blue deck, then send back the response code.</p>
+          <textarea id="corrJoinCode" rows="8" spellcheck="false" placeholder="CHEGG1..."></textarea>
+          <button id="corrJoinButton" type="button">Use invite code</button>
+          <p id="corrHomeMessage" class="corr-message"></p>
+        </article>
+      </section>
+
+      <section id="corrDetail" class="corr-detail is-hidden"></section>
+
+      <a class="corr-back" href="index.html">Back to menu</a>
+    </main>
+
+    <main id="app" class="app is-hidden">
+      <section class="topbar" aria-label="Game status">
+        <div>
+          <p class="eyebrow">CHEGG</p>
+          <h1 id="turnTitle">Correspondence match</h1>
+        </div>
+        <div class="status-strip">
+          <div class="meter" id="redMeter"></div>
+          <div class="meter" id="blueMeter"></div>
+        </div>
+        <div class="top-actions">
+          <button id="rulesButton" type="button">Rules</button>
+          <button id="newGameButton" type="button">Games</button>
+        </div>
+      </section>
+
+      <section class="table">
+        <aside class="side-panel player-panel" id="activePanel"></aside>
+        <section class="board-wrap">
+          <div class="board-frame">
+            <div id="board" class="board" role="grid" aria-label="CHEGG board"></div>
+            <div id="fxLayer" class="fx-layer" aria-hidden="true"></div>
+          </div>
+          <div class="selection-panel" id="selectionPanel"></div>
+        </section>
+        <aside class="side-panel hand-panel">
+          <div class="panel-head">
+            <h2>Hand</h2>
+            <span id="deckCount"></span>
+          </div>
+          <div id="hand" class="hand"></div>
+          <button id="endTurnButton" class="end-turn" type="button">End turn</button>
+          <div id="corrPanel" class="corr-panel"></div>
+        </aside>
+      </section>
+    </main>
+
+    <dialog id="rulesDialog" class="rules-dialog">
+      <form method="dialog">
+        <button class="dialog-close" aria-label="Close rules">x</button>
+      </form>
+      <h2>CHEGG Rules Reference</h2>
+      <div class="rules-grid" id="rulesGrid"></div>
+    </dialog>
+
+    <section id="deckScreen" class="deck-screen">
+      <div class="deck-builder">
+        <div class="deck-builder-head">
+          <div>
+            <p class="eyebrow">Deck building</p>
+            <h2 id="builderTitle">Build a 15-minion deck</h2>
+          </div>
+          <span id="builderCount" class="badge">0 / 15</span>
+        </div>
+        <div class="deck-builder-body">
+          <div>
+            <h3>Minion pool</h3>
+            <div id="builderPool" class="builder-pool"></div>
+          </div>
+          <div>
+            <h3>Your deck</h3>
+            <div id="builderList" class="builder-list"></div>
+            <div class="builder-actions">
+              <button id="builderAutoButton" type="button">Quick fill</button>
+              <button id="builderDoneButton" type="button">Lock deck</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div id="passScreen" class="pass-screen">
+      <div class="pass-card">
+        <p class="eyebrow">Screen hidden</p>
+        <h2 id="passTitle">Pass the computer</h2>
+        <p id="passText"></p>
+        <button id="readyButton" type="button">Ready</button>
+      </div>
+    </div>
+
+    <div id="hoverCard" class="hover-card" aria-hidden="true"></div>
+
+    <script src="src/game.js?v=corrTurnUx1"></script>
+  </body>
+</html>
