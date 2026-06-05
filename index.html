@@ -4,13 +4,77 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>CHEGG</title>
-    <link rel="stylesheet" href="styles.css?v=titleCredits1" />
+    <link rel="stylesheet" href="styles.css?v=titleOverhaul1" />
   </head>
   <body class="title-page">
     <main id="titleScreen" class="title-screen is-visible">
       <div class="title-scene">
-        <h1 class="sr-only">CHEGG</h1>
-        <img class="title-logo" src="sprites/title.png" alt="CHEGG" />
+        <div class="title-logo-wrap">
+          <h1 class="sr-only">CHEGG</h1>
+          <img class="title-logo" src="sprites/title.png" alt="CHEGG" />
+        </div>
+
+        <section class="title-menu" aria-label="Main menu">
+          <div class="mode-grid" aria-label="Game modes">
+            <button id="hotseatModeButton" class="mode-button primary is-active" type="button" data-mode="hotseat">
+              <span class="mode-glyph" aria-hidden="true">◆</span>
+              <span class="mode-copy"><strong>Hot-seat</strong><small>Local pass-and-play</small></span>
+            </button>
+            <button id="correspondenceModeButton" class="mode-button" type="button" data-mode="correspondence">
+              <span class="mode-glyph" aria-hidden="true">◇</span>
+              <span class="mode-copy"><strong>Correspondence</strong><small>Exchange turn codes</small></span>
+            </button>
+          </div>
+
+          <section id="hotseatIntro" class="mode-details is-visible is-entering" aria-label="Hot-seat mode details">
+            <div class="mode-panel-head">
+              <p class="eyebrow">Selected mode</p>
+              <h2>Hot-seat: pass the computer</h2>
+            </div>
+            <article>
+              <span class="mode-icon" aria-hidden="true">♟</span>
+              <h3>The Game</h3>
+              <p>Creature tactics with chess-like movement, Minecraft mobs, mana, and deck-built spawn eggs.</p>
+              <a href="https://docs.google.com/document/d/1TM736HhNsh2nz8l3L-a6PuWAVxbnBSF__NB7qX7Wdlw/edit?tab=t.0" target="_blank" rel="noreferrer">Original rules</a>
+            </article>
+            <article>
+              <span class="mode-icon" aria-hidden="true">▣</span>
+              <h3>Hot-seat</h3>
+              <p>Two players share this computer, build private decks, and play on the same board.</p>
+            </article>
+            <article>
+              <span class="mode-icon" aria-hidden="true">◈</span>
+              <h3>Screen Pass</h3>
+              <p>Turns hide the table, then replay the opponent's actions before you move.</p>
+            </article>
+            <a class="mode-start" href="game.html"><span>Start Hot-seat</span><strong>→</strong></a>
+          </section>
+
+          <section id="correspondenceIntro" class="mode-details" aria-label="Correspondence mode details">
+            <div class="mode-panel-head">
+              <p class="eyebrow">Selected mode</p>
+              <h2>Correspondence: play by turns</h2>
+            </div>
+            <article>
+              <span class="mode-icon" aria-hidden="true">♟</span>
+              <h3>The Game</h3>
+              <p>Same CHEGG rules, same creatures, same deck-built strategy.</p>
+              <a href="https://docs.google.com/document/d/1TM736HhNsh2nz8l3L-a6PuWAVxbnBSF__NB7qX7Wdlw/edit?tab=t.0" target="_blank" rel="noreferrer">Original rules</a>
+            </article>
+            <article>
+              <span class="mode-icon" aria-hidden="true">✉</span>
+              <h3>Correspondence</h3>
+              <p>Slow matches for players sending turns through chat, email, or DMs.</p>
+            </article>
+            <article>
+              <span class="mode-icon" aria-hidden="true">▤</span>
+              <h3>Code Exchange</h3>
+              <p>Finished turns create CHEGG codes to copy, send, and import later.</p>
+            </article>
+            <a class="mode-start" href="correspondence.html"><span>Open Correspondence</span><strong>→</strong></a>
+          </section>
+        </section>
+
         <section class="title-credits" aria-label="Credits">
           <a class="credit-link" href="https://www.youtube.com/watch?v=ciZCvS2PKNA" target="_blank" rel="noreferrer">
             <img src="sprites/gerg.png" alt="Gerg" />
@@ -20,64 +84,6 @@
             <img src="sprites/lfzinho.png" alt="Lfzinho" />
             <span><strong>Browser version by Lfzinho</strong><small>itch.io</small></span>
           </a>
-        </section>
-        <div class="mode-grid" aria-label="Game modes">
-          <button id="hotseatModeButton" class="mode-button primary is-active" type="button" data-mode="hotseat">
-            <span>Hot-seat</span>
-            <small>Local pass-and-play</small>
-          </button>
-          <button id="correspondenceModeButton" class="mode-button" type="button" data-mode="correspondence">
-            <span>Correspondence</span>
-            <small>Play by turns</small>
-          </button>
-        </div>
-
-        <section id="hotseatIntro" class="mode-details is-visible is-entering" aria-label="Hot-seat mode details">
-          <div class="mode-panel-head">
-            <p class="eyebrow">Selected mode</p>
-            <h2>Hot-seat: pass the computer</h2>
-          </div>
-          <article>
-            <span class="mode-icon" aria-hidden="true">🎲</span>
-            <h3>The Game</h3>
-            <p>CHEGG is a creature tactics game inspired by chess movement, Minecraft mobs, mana, and deck-built spawn eggs.</p>
-            <a href="https://docs.google.com/document/d/1TM736HhNsh2nz8l3L-a6PuWAVxbnBSF__NB7qX7Wdlw/edit?tab=t.0" target="_blank" rel="noreferrer">Original rules</a>
-          </article>
-          <article>
-            <span class="mode-icon" aria-hidden="true">🪑</span>
-            <h3>Hot-seat</h3>
-            <p>Two players share this computer. Build decks privately, take turns locally, and use the same board for the whole match.</p>
-          </article>
-          <article>
-            <span class="mode-icon" aria-hidden="true">🙈</span>
-            <h3>Screen Pass</h3>
-            <p>Between turns, the screen hides the board and hand. Call the other player over, press Ready, then review the replay.</p>
-          </article>
-          <a class="mode-start" href="game.html"><span>Start Hot-seat</span><strong>→</strong></a>
-        </section>
-
-        <section id="correspondenceIntro" class="mode-details" aria-label="Correspondence mode details">
-          <div class="mode-panel-head">
-            <p class="eyebrow">Selected mode</p>
-            <h2>Correspondence: play by turns</h2>
-          </div>
-          <article>
-            <span class="mode-icon" aria-hidden="true">🎲</span>
-            <h3>The Game</h3>
-            <p>Same CHEGG rules, same creature movement, same deck-built strategy.</p>
-            <a href="https://docs.google.com/document/d/1TM736HhNsh2nz8l3L-a6PuWAVxbnBSF__NB7qX7Wdlw/edit?tab=t.0" target="_blank" rel="noreferrer">Original rules</a>
-          </article>
-          <article>
-            <span class="mode-icon" aria-hidden="true">✉️</span>
-            <h3>Correspondence</h3>
-            <p>Designed for slower games where players exchange turns, like chess by mail or chat.</p>
-          </article>
-          <article>
-            <span class="mode-icon" aria-hidden="true">📦</span>
-            <h3>Code Exchange</h3>
-            <p>Each setup step and finished turn creates a CHEGG code. Send it to your opponent, then paste their next code to continue.</p>
-          </article>
-          <a class="mode-start" href="correspondence.html"><span>Open Correspondence</span><strong>→</strong></a>
         </section>
       </div>
     </main>
